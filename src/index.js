@@ -9,14 +9,21 @@ import movies from './reducers';
 //This createStore function will internally call my reducer to get the initial state
 
 const store = createStore(movies);
-//console.log('store',store)
-console.log('state',store.getState());
+console.log('store',store)
+//console.log('BEFORE STATE',store.getState());
 
+
+// store.dispatch({
+//   type:'ADD_MOVIES',
+//   movies:[{name:'Superman'}]
+// });
+
+//console.log('AFTER STATE',store.getState());
 
 
 ReactDOM.render(
   <React.StrictMode>
-    <App />
+    <App store={store} />
   </React.StrictMode>,
   document.getElementById('root')
 );
