@@ -1,7 +1,8 @@
 import React from 'react';
 import {data} from '../data';
 import Navbar from './Navbar';
-import MovieCard from './MovieCard'
+import MovieCard from './MovieCard';
+import {addMovies} from '../actions';
 
 class App extends React.Component {
 
@@ -18,10 +19,9 @@ class App extends React.Component {
       this.forceUpdate();
     })
 
-    store.dispatch({
-      type:'ADD_MOVIES',
-      movies: data
-    });
+    //Returning the object
+
+    store.dispatch(addMovies(data));
 
     // Flow :  Dispatch an action to add the movies ---> Subscription is called ---> We force update our Application
 
@@ -30,7 +30,7 @@ class App extends React.Component {
 
   render(){
 
-    const movies = this.props.store.getState();
+    const { list } = this.props.store.getState();   //{list: [], favourites: []}
     console.log('RENDER');
 
     return (
@@ -43,7 +43,7 @@ class App extends React.Component {
           </div>
 
           <div className="list">
-            {movies.map((movie,index) => (
+            {list.map((movie,index) => (
               <MovieCard movie={movie} key={`movies-${index}`}/>
             ))}
           </div>
