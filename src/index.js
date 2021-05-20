@@ -5,28 +5,49 @@ import './index.css';
 import App from './components/App';
 import movies from './reducers';
 import rootReducer from './reducers'
+import thunk from 'redux-thunk';
 
 //this object will contain two properties, one getState property and the other dispatch property
 //Both of these are the same functions we have in store
 //curried form of function logger
 //function logger(obj, next, action)
 //logger(obj)(next)(action)
-const logger = function ({dispatch,getState}) {
+// const logger = function ({dispatch,getState}) {
 
-  return function(next) {
-    return function (action) {
-      //middleware code
-      console.log('ACTION_TYPE = ', action.type);
-      next(action);
-    }
+//   return function(next) {
+//     return function (action) {
+//       //middleware code
+//       console.log('ACTION_TYPE = ', action.type);
+//       next(action);
+//     }
+//   }
+
+// }
+
+const logger = ({dispatch,getState}) => (next) => (action) => {
+  //logger code
+  if (typeof action !== 'function'){
+    console.log('ACTION_TYPE = ', action.type);
   }
+  next(action);
 
 }
+
+// const thunk = ({dispatch,getState}) => (next) => (action) => {
+//   //logger code
+//   if (typeof action === 'function'){
+//     //call that function
+//     action(dispatch);
+//     return;
+//   }
+//   next(action);
+
+// }
 
 
 //This createStore function will internally call my reducer to get the initial state
 
-const store = createStore(rootReducer,applyMiddleware(logger));
+const store = createStore(rootReducer,applyMiddleware(logger,thunk));
 console.log('store',store)
 //console.log('BEFORE STATE',store.getState());
 
