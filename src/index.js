@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { createContext } from 'react';
 import ReactDOM from 'react-dom';
 import { createStore, applyMiddleware } from 'redux';
 import './index.css';
@@ -51,6 +51,21 @@ const store = createStore(rootReducer,applyMiddleware(logger,thunk));
 console.log('store',store)
 //console.log('BEFORE STATE',store.getState());
 
+export const StoreContext = createContext();
+
+console.log('StoreContext',StoreContext);
+
+class Provider extends React.Component {
+  render(){
+    const {store}  = this.props;
+    return <StoreContext.Provider value={store}>
+      {/*Means it will render App component*/}
+      {this.props.children}
+    </StoreContext.Provider>;
+     
+  }
+}
+
 
 // store.dispatch({
 //   type:'ADD_MOVIES',
@@ -61,9 +76,12 @@ console.log('store',store)
 
 
 ReactDOM.render(
-  <React.StrictMode>
-    <App store={store} />
-  </React.StrictMode>,
+  //Pass my store to each and every descendent of App
+  <Provider store={store}>
+    <React.StrictMode>
+    <App />
+    </React.StrictMode>
+  </Provider>,
   document.getElementById('root')
 );
 
