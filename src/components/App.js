@@ -1,9 +1,10 @@
 import React from 'react';
-import {data} from '../data';
+import {connect} from 'react-redux';
+import {data as moviesList} from '../data';
 import Navbar from './Navbar';
 import MovieCard from './MovieCard';
 import {addMovies, setShowFavourites} from '../actions';
-import {StoreContext} from '../index';
+//import {connect} from '../index';
 
 class App extends React.Component {
 
@@ -11,26 +12,26 @@ class App extends React.Component {
     //Make Api Call
     //When we get the movies, we dispatch an action that HEY we want to add the movies to the STORE
     //dispatch action
-    const {store} = this.props;
+    // const {store} = this.props;
 
-    store.subscribe(() => {
-      console.log('UPDATED');
-      //Update our APP component
+    // store.subscribe(() => {
+    //   console.log('UPDATED');
+    //   //Update our APP component
 
-      this.forceUpdate();
-    })
+    //   this.forceUpdate();
+    // })
 
     //Returning the object
 
-    store.dispatch(addMovies(data));
+    this.props.dispatch(addMovies(moviesList));
 
     // Flow :  Dispatch an action to add the movies ---> Subscription is called ---> We force update our Application
 
-    console.log('STATE', this.props.store.getState())
+    //console.log('STATE', this.props.store.getState())
   }
 
   isMovieFavourite = (movie) => {
-    const {movies} = this.props.store.getState();
+    const {movies} = this.props;
 
     const index = movies.favourites.indexOf(movie);
 
@@ -42,10 +43,10 @@ class App extends React.Component {
   }
 
   onChangeTab = (val) => {
-    this.props.store.dispatch(setShowFavourites(val))
+    this.props.dispatch(setShowFavourites(val))
   }
   render(){
-    const {movies, search} = this.props.store.getState();   //{movies:{}, search:{}}
+    const {movies, search} = this.props;   //{movies:{}, search:{}}
     const { list , favourites, showFavourites} = movies;   
     console.log('RENDER');
 
@@ -65,7 +66,7 @@ class App extends React.Component {
               <MovieCard 
                 movie={movie} 
                 key={`movies-${index}`} 
-                dispatch={this.props.store.dispatch} 
+                dispatch={this.props.dispatch} 
                 isFavourite={this.isMovieFavourite(movie)}
               />
             ))}
@@ -78,17 +79,30 @@ class App extends React.Component {
   }
 }
 
-class AppWrapper extends React.Component{
+// class AppWrapper extends React.Component{
 
-  render() {
-    return (
-      <StoreContext.Consumer>
-        {(store) => <App store={store} />}
+//   render() {
+//     return (
+//       <StoreContext.Consumer>
+//         {(store) => <App store={store} />}
 
-      </StoreContext.Consumer>
+//       </StoreContext.Consumer>
 
-    )
+//     )
+//   }
+// }
+//This callback will tell that what data we want from the store
+function mapStateToProps(state){
+  //Tell what all properties I want from the store
+  return {
+    //Telling the function that I want this amount of data in my component
+    //I want movies and search as props inside my App component
+    movies: state.movies,
+    search: state.movies
+
   }
-}
 
-export default AppWrapper;
+};
+//In this connect function,we'll have to tell that what data we want from the store and which component we want to connect to this store
+const connectedAppComponent = connect(mapStateToProps)(App)
+export default connectedAppComponent;
